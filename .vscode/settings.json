@@ -1,0 +1,16 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "html.suggest.angular1": false,
+  "html.suggest.ionic": false,
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#cab584",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#3a866f",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "panel.border": "#cab584",
+    "sideBar.border": "#cab584",
+    "editorGroup.border": "#cab584"
+  },
+  "peacock.color": "#bb9f60"
+}

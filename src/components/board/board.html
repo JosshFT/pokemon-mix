@@ -1,0 +1,11 @@
+<template>
+  <div class="board">
+    sdfgdsfgsd
+    <button click.delegate="setPokemons()">Load Pokemon</button>
+    <item
+      repeat.for="tree of pokemons"
+      click.delegate="getTree(tree.value, $index)"
+      tree.bind="tree"
+    ></item>
+  </div>
+</template>
