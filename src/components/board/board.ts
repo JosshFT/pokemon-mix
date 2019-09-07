@@ -1,28 +1,50 @@
+import { Store } from 'redux';
 import { inject, View, LogManager } from 'aurelia-framework';
 import Pokemon from '../../models/pokemon.model';
 import PokemonService from '../../services/pokemon.service';
 import PokemonTree from 'models/pokemon.tree';
 import './board.scss'
+import ApplicationStore from '../../store/app.store';
 
-@inject(PokemonService)
+@inject(PokemonService, ApplicationStore)
 export class Board {
   pokemons: PokemonTree[];
+  subscription;
 
-  constructor(private pokemonService: PokemonService) {
+  constructor(private pokemonService: PokemonService, private store: ApplicationStore) {
     this.pokemons = [];
+    this.subscription = this.toObservable(this.store.store);
+
+    this.subscription.subscribe((state) => {
+      if (state.pokemon) {
+        let tree = this.pokemonService.pokemonTreeFactory(state.pokemon);
+        this.pokemons.push(tree);
+      }
+    })
   }
 
   async setPokemons() {
-    let data = await this.pokemonService.getPokemon(1);
-    let pokemon = this.pokemonService.pokemonFactory(data);
-    let tree = this.pokemonService.pokemonTreeFactory(pokemon);
-    this.pokemons.push(tree);
+    this.pokemonService.getPokemon(1);
+    // this.pokemonService.getPokemon(4);
+    // this.pokemonService.getPokemon(7);
   }
 
   async getTree(pokemon: Pokemon, index: any) {
     let tree: PokemonTree = await this.pokemonService.getPokemonEvolutions(pokemon);
     this.pokemons[index].next = tree;
-    // this.pokemons.push(tree);
-    console.log("TCL: Board -> getTree -> this.pokemons", this.pokemons);
+  }
+
+  toObservable(store) {
+    return {
+      subscribe(onNext) {
+        let dispose = store.subscribe(() => onNext(store.getState()));
+        onNext(store.getState());
+        return { dispose };
+      }
+    }
+  }
+
+  unbind() {
+    this.subscription();
   }
 }

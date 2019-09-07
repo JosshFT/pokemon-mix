@@ -1,14 +1,22 @@
 import Pokemon from '../models/pokemon.model';
 import { HttpClient } from 'aurelia-fetch-client';
 import PokemonTree from 'models/pokemon.tree';
-import store from 'store/app.store';
-import { fetchPokemon } from 'actions/pokemon.actions';
+import PokemonActions from '../actions/pokemon.actions';
+import ApplicationStore from '../store/app.store';
+import { inject } from 'aurelia-framework';
+import { Store } from 'redux';
 
+@inject(ApplicationStore, PokemonActions)
 export default class PokemonService {
   baseUrl: string;
   http: HttpClient;
   unsubscribe;
-  constructor() {
+  store: Store;
+  actions: PokemonActions;
+  
+  constructor(store: ApplicationStore, pokemonActions: PokemonActions) {
+    this.actions = pokemonActions;
+    this.store = store.store;
     this.baseUrl = `https://pokeapi.co/api/v2`;
     this.http = new HttpClient().configure(config => {
       config
@@ -20,16 +28,11 @@ export default class PokemonService {
           }
         })
     });
-    // Log the initial state
-    console.log(store.getState());
-    // Every time the state changes, log it
-    // Note that subscribe() returns a function for unregistering the listener
-    this.unsubscribe = store.subscribe(() => console.log(store.getState()));
   }
 
   async getPokemon(id: number){
     // Dispatch some actions
-    store.dispatch(fetchPokemon(id));
+    this.actions.fetchPokemon(id, this.http);
   }
 
   async getPokemonEvolutions(pokemon: Pokemon) {
@@ -60,6 +63,7 @@ export default class PokemonService {
   }
 
   pokemonFactory(response: any) {
+    console.log("TCL: PokemonService -> pokemonFactory -> response", response);
     return new Pokemon(response.id, response.name, response.types[0].type.name, response.sprites.front_default);
   }
   pokemonTreeFactory(pokemon: Pokemon) {
