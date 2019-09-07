@@ -1,7 +1,7 @@
 import { inject, View, LogManager } from 'aurelia-framework';
-import Pokemon from '../../Models/pokemon.model';
+import Pokemon from '../../models/pokemon.model';
 import PokemonService from '../../services/pokemon.service';
-import PokemonTree from 'Models/pokemon.tree';
+import PokemonTree from 'models/pokemon.tree';
 import './board.scss'
 
 @inject(PokemonService)

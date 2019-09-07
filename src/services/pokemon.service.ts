@@ -1,10 +1,13 @@
-import Pokemon from './../Models/pokemon.model';
+import Pokemon from '../models/pokemon.model';
 import { HttpClient } from 'aurelia-fetch-client';
-import PokemonTree from 'Models/pokemon.tree';
+import PokemonTree from 'models/pokemon.tree';
+import store from 'store/app.store';
+import { fetchPokemon } from 'actions/pokemon.actions';
 
 export default class PokemonService {
   baseUrl: string;
   http: HttpClient;
+  unsubscribe;
   constructor() {
     this.baseUrl = `https://pokeapi.co/api/v2`;
     this.http = new HttpClient().configure(config => {
@@ -16,14 +19,17 @@ export default class PokemonService {
             'Access-Control-Allow-Origin': `*`
           }
         })
-    })
+    });
+    // Log the initial state
+    console.log(store.getState());
+    // Every time the state changes, log it
+    // Note that subscribe() returns a function for unregistering the listener
+    this.unsubscribe = store.subscribe(() => console.log(store.getState()));
   }
 
   async getPokemon(id: number){
-    return await this.http.get(`/pokemon/${id}`)
-      .then((response) => response.json())
-      .then((response) => response)
-      .catch((err) => console.log(err));
+    // Dispatch some actions
+    store.dispatch(fetchPokemon(id));
   }
 
   async getPokemonEvolutions(pokemon: Pokemon) {
