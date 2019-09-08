@@ -4,15 +4,11 @@ import './item.scss';
 
 export class Item {
   @bindable({ defaultBindingMode: bindingMode.toView }) tree: PokemonTree;
+  styleString: string;
 
-  constructor() {
-    console.log("TESTING")
-  }
+  constructor() {}
 
   bind(bindingContext: Object, overrideContext: Object) {
-    console.log("TCL: Item -> bind -> overrideContext", overrideContext);
-    console.log("TCL: Item -> bind -> bindingContext", bindingContext);
-    this.tree;
-    console.log("TCL: Item -> created -> this.tree;", this.tree);
+    this.styleString = `background-color: ${this.tree.value.color}`;
   }
 }

@@ -32,38 +32,14 @@ export default class PokemonService {
 
   async getPokemon(id: number){
     // Dispatch some actions
-    this.actions.fetchPokemon(id, this.http);
+    this.actions.fetchPokemon(id, this.http, true);
   }
 
-  async getPokemonEvolutions(pokemon: Pokemon) {
-    let tree = new PokemonTree(pokemon);
-    let pokemonUrl = await this.http.get(`/pokemon-species/${pokemon.id}`)
-      .then((response) => response.json())
-      .then((response) => response.evolution_chain.url)
-      .catch((err) => console.log(err));
-
-    let data = await this.http.fetch(pokemonUrl)
-      .then((response) => response.json())
-      .then((response) => response)
-      .catch((err) => console.log(err));
-      
-    let chain = data.chain.evolves_to[0];
-    let finalTree = tree;
-    while (chain) {
-      let pokemonId = chain.species.url.split("/");
-      let pokemon: Pokemon = this.pokemonFactory(await this.getPokemon(pokemonId[pokemonId.length - 2]))
-      let tmp = tree;
-      tree.next = new PokemonTree(pokemon);
-      tree = tree.next;
-      tree.prev = tmp;
-      chain = chain.evolves_to[0];
-    }
-
-    return finalTree;
+  async getPokemonEvolutions(tree: PokemonTree) {
+    return this.actions.getPokemonEvolutions(tree, this.http);
   }
 
   pokemonFactory(response: any) {
-    console.log("TCL: PokemonService -> pokemonFactory -> response", response);
     return new Pokemon(response.id, response.name, response.types[0].type.name, response.sprites.front_default);
   }
   pokemonTreeFactory(pokemon: Pokemon) {

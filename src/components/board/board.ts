@@ -20,18 +20,21 @@ export class Board {
         let tree = this.pokemonService.pokemonTreeFactory(state.pokemon);
         this.pokemons.push(tree);
       }
-    })
+    });
+
+    this.setPokemons();
   }
 
   async setPokemons() {
     this.pokemonService.getPokemon(1);
-    // this.pokemonService.getPokemon(4);
-    // this.pokemonService.getPokemon(7);
+    this.pokemonService.getPokemon(4);
+    this.pokemonService.getPokemon(7);
+    this.pokemonService.getPokemon(133);
   }
 
-  async getTree(pokemon: Pokemon, index: any) {
-    let tree: PokemonTree = await this.pokemonService.getPokemonEvolutions(pokemon);
-    this.pokemons[index].next = tree;
+  async getTree(tree: PokemonTree, index: any) {
+    console.log("TCL: Board -> getTree -> tree", tree);
+    this.pokemonService.getPokemonEvolutions(tree);
   }
 
   toObservable(store) {

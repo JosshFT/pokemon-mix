@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" style.bind="styleString">
     <!-- <div>
       <b>${pokemon.name}</b>
     </div>
@@ -10,5 +10,6 @@
       <img src.bind="tree.value.pic">
     </div>
   </div>
+  <div if.bind="tree.next" style="display: inline-block;">==></div>
   <item if.bind="tree.next" tree.bind="tree.next"></item>
 </template>
