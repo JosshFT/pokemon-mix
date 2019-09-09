@@ -56,7 +56,7 @@ export class Tree {
         height: ${itemSize};
         margin: -${parseInt(itemSize) / 2}em;
         opacity: 1;
-        transform:rotate(${(rot) * 1}deg) translate(${parseInt(circleSize) / 2}em) rotate(${(rot) * -1}deg); scale(1);`
+        transform: rotate(${(rot) * 1}deg) translate(${parseInt(circleSize) / 2}em) rotate(${(rot) * -1}deg); scale(1);`
       return its;
     };
   }
