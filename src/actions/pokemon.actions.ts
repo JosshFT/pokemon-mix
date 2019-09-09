@@ -88,7 +88,6 @@ export default class PokemonActions {
         chain = chain.evolves_to[0];
       }
     }
-
     return finalTree;
   }
 }

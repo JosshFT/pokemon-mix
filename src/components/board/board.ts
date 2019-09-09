@@ -5,23 +5,14 @@ import PokemonService from '../../services/pokemon.service';
 import PokemonTree from 'models/pokemon.tree';
 import './board.scss'
 import ApplicationStore from '../../store/app.store';
+import { BehaviorSubject } from 'rxjs';
 
 @inject(PokemonService, ApplicationStore)
 export class Board {
-  pokemons: PokemonTree[];
-  subscription;
+  pokemons: Map<number, BehaviorSubject<PokemonTree>>;
 
   constructor(private pokemonService: PokemonService, private store: ApplicationStore) {
-    this.pokemons = [];
-    this.subscription = this.toObservable(this.store.store);
-
-    this.subscription.subscribe((state) => {
-      if (state.pokemon) {
-        let tree = this.pokemonService.pokemonTreeFactory(state.pokemon);
-        this.pokemons.push(tree);
-      }
-    });
-
+    this.pokemons = this.pokemonService.pokemons;
     this.setPokemons();
   }
 
@@ -32,22 +23,7 @@ export class Board {
     this.pokemonService.getPokemon(133);
   }
 
-  async getTree(tree: PokemonTree, index: any) {
-    console.log("TCL: Board -> getTree -> tree", tree);
-    this.pokemonService.getPokemonEvolutions(tree);
-  }
-
-  toObservable(store) {
-    return {
-      subscribe(onNext) {
-        let dispose = store.subscribe(() => onNext(store.getState()));
-        onNext(store.getState());
-        return { dispose };
-      }
-    }
-  }
-
-  unbind() {
-    this.subscription();
+  async getTree(key: number, tree: PokemonTree) {
+    this.pokemonService.getPokemonEvolutions(key, tree);
   }
 }

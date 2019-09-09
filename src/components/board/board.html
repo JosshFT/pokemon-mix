@@ -2,11 +2,10 @@
   <div class="board">
     sdfgdsfgsd
     <!-- <button click.delegate="setPokemons()">Load Pokemon</button> -->
-    <item
-      repeat.for="tree of pokemons"
-      click.delegate="getTree(tree, $index)"
-      tree.bind="tree"
-      style="display:block;"
-    ></item>
+    <tree
+      repeat.for="[key, value] of pokemons"
+      click.delegate="getTree(key, value.value)"
+      tree.bind="value"
+    ></tree>
   </div>
 </template>
