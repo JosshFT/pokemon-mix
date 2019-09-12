@@ -7,12 +7,14 @@ import Pokemon from '../models/pokemon.model';
 import PokemonTree from 'models/pokemon.tree';
 import PokemonActions from '../actions/pokemon.actions';
 import ApplicationStore from '../store/app.store';
+import Bench from 'models/bench.model';
 
 @inject(ApplicationStore, PokemonActions)
 export default class PokemonService {
   baseUrl: string;
   http: HttpClient;
   pokemons: Map<number, BehaviorSubject<PokemonTree>>;
+  bench: BehaviorSubject<Bench>;
   store: Store;
   subscription;
   actions: PokemonActions;
@@ -34,6 +36,7 @@ export default class PokemonService {
     });
 
     this.pokemons = new Map<number, BehaviorSubject<PokemonTree>>();
+    this.bench = new BehaviorSubject(new Bench());
     this.subscription = this.toObservable(this.store);
     this.subscription.subscribe(this.updatePokemonTree);
   }
@@ -46,6 +49,10 @@ export default class PokemonService {
       } else {
         this.pokemons.get(tree.value.id).next(tree);
       }
+    }
+
+    if (state.pokemons) {
+      this.bench.next(state.pokemons);
     }
   }
 
@@ -65,6 +72,10 @@ export default class PokemonService {
 
   pokemonTreeFactory(pokemon: Pokemon) {
     return new PokemonTree(pokemon);
+  }
+
+  addPokemonBench(pokemon: Pokemon) {
+    this.actions.addPokemonBench(pokemon);
   }
 
   toObservable(store) {

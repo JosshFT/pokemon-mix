@@ -7,11 +7,11 @@ import './board.scss'
 import ApplicationStore from '../../store/app.store';
 import { BehaviorSubject } from 'rxjs';
 
-@inject(PokemonService, ApplicationStore)
+@inject(PokemonService)
 export class Board {
   pokemons: Map<number, BehaviorSubject<PokemonTree>>;
 
-  constructor(private pokemonService: PokemonService, private store: ApplicationStore) {
+  constructor(private pokemonService: PokemonService) {
     this.pokemons = this.pokemonService.pokemons;
     this.setPokemons();
   }
@@ -24,6 +24,11 @@ export class Board {
   }
 
   async getTree(key: number, tree: PokemonTree) {
-    this.pokemonService.getPokemonEvolutions(key, tree);
+    // this.pokemonService.getPokemonEvolutions(key, tree);
+    this.pickPokemon(tree.value);
+  }
+
+  pickPokemon(pokemon) {
+    this.pokemonService.addPokemonBench(pokemon);
   }
 }
