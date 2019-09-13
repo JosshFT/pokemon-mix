@@ -1,3 +1,4 @@
+import Bench from 'models/bench.model';
 import ApplicationStore from '../store/app.store';
 import Pokemon from "../models/pokemon.model";
 import { inject } from "aurelia-framework";
@@ -39,17 +40,25 @@ export default class PokemonActions {
     return { type: ADD_POKEMON_BENCH_REQUEST, payload: { loading: true } }
   }
   
-  addPokemonBenchSucess(pokemon: Pokemon) {
-    return { type: ADD_POKEMON_BENCH_SUCCESS, payload: { pokemon, loading: false } }
+  addPokemonBenchSucess(bench: Bench) {
+    return { type: ADD_POKEMON_BENCH_SUCCESS, payload: { bench, loading: false } }
   }
 
   addPokemonBenchFailure(error) {
     return { type: ADD_POKEMON_BENCH_FAILURE, payload: { loading: false, error } }
   }
 
-  addPokemonBench(pokemon: Pokemon) {
+  addPokemonBench(pokemon: Pokemon, bench: Bench) {
+    console.log("TCL: PokemonActions -> addPokemonBench -> bench", bench);
     this.dispatch(this.addPokemonBenchRequest());
-    this.dispatch(this.addPokemonBenchSucess(pokemon));
+
+    let newCount = 1;
+    if(bench.count.has(pokemon.id)) {
+      newCount = bench.count.get(pokemon.id).count + 1;
+    }
+    bench.count.set(pokemon.id, { count: newCount});
+    bench.array.push(pokemon);
+    this.dispatch(this.addPokemonBenchSucess(bench));
   }
 
   pokemonFactory(response: any, color?: string) {

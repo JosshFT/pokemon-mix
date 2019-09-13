@@ -14,11 +14,12 @@ export class Bench {
 
   constructor(private pokemonService: PokemonService) {
     this.subscription = this.pokemonService.bench.subscribe((value) => {
-      this.bench = value;
+    console.log("TCL: Bench -> constructor -> value", value);
+
     });
   }
 
   combineEquals() {
-    
+
   }
 }

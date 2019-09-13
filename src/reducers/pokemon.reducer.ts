@@ -30,11 +30,11 @@ export function pokemonReducer(state, action) {
         error: action.payload.error
       };
     case ADD_POKEMON_BENCH_SUCCESS:
-      let pokemons = state.pokemons ? [...state.pokemons] : [];
-      pokemons.push(action.payload.pokemon)
+      let bench = action.payload.bench;
+      console.log("TCL: pokemonReducer -> bench", bench);
       return {
         ...state,
-        pokemons
+        bench
       };
     default:
       return state;

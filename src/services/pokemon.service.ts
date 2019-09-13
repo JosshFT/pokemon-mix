@@ -1,7 +1,7 @@
 import { HttpClient } from 'aurelia-fetch-client';
 import { inject } from 'aurelia-framework';
 import { Store } from 'redux';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 import Pokemon from '../models/pokemon.model';
 import PokemonTree from 'models/pokemon.tree';
@@ -36,7 +36,7 @@ export default class PokemonService {
     });
 
     this.pokemons = new Map<number, BehaviorSubject<PokemonTree>>();
-    this.bench = new BehaviorSubject(new Bench());
+    this.bench = new BehaviorSubject(new Bench(new Map<0, {count: 0}>(), []));
     this.subscription = this.toObservable(this.store);
     this.subscription.subscribe(this.updatePokemonTree);
   }
@@ -51,8 +51,8 @@ export default class PokemonService {
       }
     }
 
-    if (state.pokemons) {
-      this.bench.next(state.pokemons);
+    if (state.bench) {
+      this.bench.next(state.bench);
     }
   }
 
@@ -75,7 +75,7 @@ export default class PokemonService {
   }
 
   addPokemonBench(pokemon: Pokemon) {
-    this.actions.addPokemonBench(pokemon);
+    this.actions.addPokemonBench(pokemon, this.bench.value);
   }
 
   toObservable(store) {
