@@ -3,14 +3,15 @@
   "html.suggest.angular1": false,
   "html.suggest.ionic": false,
   "workbench.colorCustomizations": {
-    "activityBar.background": "#cab584",
+    "activityBar.background": "#b650f0",
     "activityBar.foreground": "#15202b",
     "activityBar.inactiveForeground": "#15202b99",
-    "activityBarBadge.background": "#3a866f",
-    "activityBarBadge.foreground": "#e7e7e7",
-    "panel.border": "#cab584",
-    "sideBar.border": "#cab584",
-    "editorGroup.border": "#cab584"
+    "activityBarBadge.background": "#f0b64f",
+    "activityBarBadge.foreground": "#15202b",
+    "panel.border": "#b650f0",
+    "sideBar.border": "#b650f0",
+    "editorGroup.border": "#b650f0"
   },
-  "peacock.color": "#bb9f60"
+  "peacock.color": "#bb9f60",
+  "peacock.remoteColor": "#a321ec"
 }

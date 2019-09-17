@@ -51,11 +51,11 @@ export default class PokemonService {
 
   async getPokemon(id: number) {
     // Dispatch some actions
-    this.actions.fetchPokemon(id, this.http, true);
+    this.actions.fetchPokemon(id, true);
   }
 
   async getPokemonEvolutions(key: number, tree: PokemonTree) {
-    this.pokemons.get(key).next(await this.actions.getPokemonEvolutions(tree, this.http));
+    this.pokemons.get(key).next(await this.actions.getPokemonEvolutions(tree));
     // return 
   }
 

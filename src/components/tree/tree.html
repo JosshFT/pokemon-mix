@@ -1,9 +1,9 @@
 <template>
   <div class="circle-container" data-items.bind="items">
     <div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
-      <!-- <item pokemon.bind="pokemons.shift()"></item> -->
       <item class="node" pokemon.bind="pokemons.shift()"></item>
     </div>
-    <item class="node" if.bind="pokemons" repeat.for="pokemon of pokemons" pokemon.bind="pokemon"></item>
+    <item class="node" if.bind="pokemons" repeat.for="pokemon of pokemons.reverse()" pokemon.bind="pokemon"></item>
   </div>
 </template>
+

@@ -22,6 +22,7 @@
 /// @param {Length} $item-size - Single item size
 @mixin on-circle($item-count, $circle-size, $item-size) {
   position: relative;
+  transition: 1s;
   width: $circle-size;
   height: $circle-size;
   padding: 0;
@@ -51,7 +52,8 @@
 
 .circle-container {
   @include on-circle($item-count: 1, $circle-size: 5em, $item-size: 6em);
-  margin: 5em auto 0;
+  margin: 1em;
+  display: inline-block;
   border: solid 5px tomato;
 
   .node {
@@ -60,7 +62,7 @@
     border-radius: 50%;
     filter: grayscale(100%);
     border: solid 5px tomato;
-    // transition: .15s;
+    transition: .15s;
 
     &:hover,
     &:active {

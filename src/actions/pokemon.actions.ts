@@ -1,6 +1,7 @@
 import ApplicationStore from '../store/app.store';
 import Pokemon from "../models/pokemon.model";
 import { inject } from "aurelia-framework";
+import { HttpClient } from 'aurelia-fetch-client';
 import { Dispatch } from 'redux';
 import PokemonTree from '../models/pokemon.tree';
 
@@ -14,9 +15,22 @@ export const CREATE_POKEMONTREE_FAILURE = 'CREATE_POKEMONTREE_FAILURE';
 @inject(ApplicationStore)
 export default class PokemonActions {
   dispatch: Dispatch;
+  baseUrl: string;
+  http: HttpClient;
 
   constructor(store: ApplicationStore) {
     this.dispatch = store.store.dispatch;
+    this.baseUrl = `https://pokeapi.co/api/v2`;
+    this.http = new HttpClient().configure(config => {
+      config
+        .withBaseUrl(this.baseUrl)
+        .withDefaults({
+          headers: {
+            'Accept': `application/json`,
+            'Access-Control-Allow-Origin': `*`
+          }
+        })
+    });
   }
 
   fetchPokemonRequest() {
@@ -35,9 +49,9 @@ export default class PokemonActions {
     return new Pokemon(response.id, response.name, response.types[0].type.name, response.sprites.front_default, color);
   }
 
-  async fetchPokemon(id: number, http, basePokemon: boolean = false, color? :string) {
+  async fetchPokemon(id: number, basePokemon: boolean = false, color? :string) {
     basePokemon && this.dispatch(this.fetchPokemonRequest());
-    return await http.get(`/pokemon/${id}`)
+    return await this.http.get(`/pokemon/${id}`)
       .then((response) => response.json())
       .then((response) => {
         let pokemon = this.pokemonFactory(response, color);
@@ -49,14 +63,14 @@ export default class PokemonActions {
       });
   }
 
-  async getPokemonEvolutions(tree: PokemonTree, http) {
+  async getPokemonEvolutions(tree: PokemonTree) {
     // let tree = new PokemonTree(pokemon);
-    let {pokemonUrl, color} = await http.get(`/pokemon-species/${tree.value.id}`)
+    let { pokemonUrl, color } = await this.http.get(`/pokemon-species/${tree.value.id}`)
     .then((response) => response.json())
     .then((response) => ({pokemonUrl: response.evolution_chain.url, color: response.color.name}))
     .catch((err) => console.log(err));
 
-    let data = await http.fetch(pokemonUrl)
+    let data = await this.http.fetch(pokemonUrl)
       .then((response) => response.json())
       .then((response) => response)
       .catch((err) => console.log(err));
@@ -68,7 +82,7 @@ export default class PokemonActions {
       let i = 0;
       while (chain) {
         let pokemonId = chain.species.url.split("/");
-        let pokemon: Pokemon = await this.fetchPokemon(pokemonId[pokemonId.length - 2], http, false, color);
+        let pokemon: Pokemon = await this.fetchPokemon(pokemonId[pokemonId.length - 2], false, color);
         let tmp = tree;
         tree.next = new PokemonTree(pokemon);
         tree = tree.next;
@@ -80,7 +94,7 @@ export default class PokemonActions {
       let chain = data.chain.evolves_to[0];
       while (chain) {
         let pokemonId = chain.species.url.split("/");
-        let pokemon: Pokemon = await this.fetchPokemon(pokemonId[pokemonId.length - 2], http, false, color);
+        let pokemon: Pokemon = await this.fetchPokemon(pokemonId[pokemonId.length - 2], false, color);
         let tmp = tree;
         tree.next = new PokemonTree(pokemon);
         tree = tree.next;

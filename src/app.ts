@@ -9,7 +9,7 @@ export class App {
     config.options.pushState = true;
     config.options.root = '/';
     config.map([
-      { route: '', moduleId: PLATFORM.moduleName('no-selection'), nav: true, title: 'Select' },
+      { route: '', moduleId: PLATFORM.moduleName('no-selection'), title: 'Select' },
       { route: 'board/', moduleId: PLATFORM.moduleName('components/board/board'), name: 'board', title: 'PICK ONE!' }
     ]);
 
