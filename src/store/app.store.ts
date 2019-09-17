@@ -5,11 +5,16 @@ declare global {
   interface Window {__REDUX_DEVTOOLS_EXTENSION__: any }
 }
 
-// just a simple wrapper around the redux store
 export default class ApplicationStore {
   store: Store;
+  initialState;
 
   constructor() {
+    this.initialState = {
+      pokemon: {},
+      pokemons: [],
+      loading: false
+    }
     this.store = this._configureStore();
   }
 

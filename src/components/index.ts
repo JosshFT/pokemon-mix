@@ -5,5 +5,6 @@ export function configure(config: FrameworkConfiguration) {
     PLATFORM.moduleName('./items/item'),
     PLATFORM.moduleName('./tree/tree'),
     PLATFORM.moduleName('./board/board'),
+    PLATFORM.moduleName('./bench/bench'),
   ])
 }

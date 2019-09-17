@@ -1,3 +1,4 @@
+import Bench from 'models/bench.model';
 import ApplicationStore from '../store/app.store';
 import Pokemon from "../models/pokemon.model";
 import { inject } from "aurelia-framework";
@@ -8,6 +9,10 @@ import PokemonTree from '../models/pokemon.tree';
 export const FETCH_POKEMON_REQUEST = 'FETCH_POKEMON_REQUEST';
 export const FETCH_POKEMON_SUCESS = 'FETCH_POKEMON_SUCESS';
 export const FETCH_POKEMON_FAILURE = 'FETCH_POKEMON_FAILURE';
+
+export const ADD_POKEMON_BENCH_REQUEST = 'ADD_POKEMON_BENCH_REQUEST';
+export const ADD_POKEMON_BENCH_SUCCESS = 'ADD_POKEMON_BENCH_SUCCESS';
+export const ADD_POKEMON_BENCH_FAILURE = 'ADD_POKEMON_BENCH_FAILURE';
 
 export const CREATE_POKEMONTREE_SUCCESS = 'CREATE_POKEMONTREE_SUCCESS';
 export const CREATE_POKEMONTREE_FAILURE = 'CREATE_POKEMONTREE_FAILURE';
@@ -38,11 +43,36 @@ export default class PokemonActions {
   }
 
   fetchPokemonSuccess(pokemon: Pokemon) {
-    return { type: FETCH_POKEMON_SUCESS, payload: pokemon }
+    return { type: FETCH_POKEMON_SUCESS, payload: pokemon, loading: false }
   }
 
   fetchPokemonFailure(error) {
     return { type: FETCH_POKEMON_FAILURE, payload: { error, loading: false } }
+  }
+
+  addPokemonBenchRequest() {
+    return { type: ADD_POKEMON_BENCH_REQUEST, payload: { loading: true } }
+  }
+  
+  addPokemonBenchSucess(bench: Bench) {
+    return { type: ADD_POKEMON_BENCH_SUCCESS, payload: { bench, loading: false } }
+  }
+
+  addPokemonBenchFailure(error) {
+    return { type: ADD_POKEMON_BENCH_FAILURE, payload: { loading: false, error } }
+  }
+
+  addPokemonBench(pokemon: Pokemon, bench: Bench) {
+    console.log("TCL: PokemonActions -> addPokemonBench -> bench", bench);
+    this.dispatch(this.addPokemonBenchRequest());
+
+    let newCount = 1;
+    if(bench.count.has(pokemon.id)) {
+      newCount = bench.count.get(pokemon.id).count + 1;
+    }
+    bench.count.set(pokemon.id, { count: newCount});
+    bench.array.push(pokemon);
+    this.dispatch(this.addPokemonBenchSucess(bench));
   }
 
   pokemonFactory(response: any, color?: string) {
@@ -96,12 +126,37 @@ export default class PokemonActions {
         let pokemonId = chain.species.url.split("/");
         let pokemon: Pokemon = await this.fetchPokemon(pokemonId[pokemonId.length - 2], false, color);
         let tmp = tree;
-        tree.next = new PokemonTree(pokemon);
-        tree = tree.next;
-        tree.prev = tmp;
+        // if (pokemon.id < tree.value.id) {
+        //   tree.prev = new PokemonTree(pokemon);
+        //   tree = tree.prev;
+        //   tree.next = tmp;
+        // } else {
+          tree.next = new PokemonTree(pokemon);
+          tree = tree.next;
+          tree.prev = tmp;
+        // }
         chain = chain.evolves_to[0];
       }
     }
     return finalTree;
   }
+
+  // placePokemonIntree(pokemon: Pokemon, tree: PokemonTree, tmp: PokemonTree, finalTree: PokemonTree) {
+  //   if (pokemon.id > finalTree.value.id) {
+  //     tree.next = new PokemonTree(pokemon);
+  //     tree = tree.next;
+  //     tree.prev = tmp;
+  //   } else {
+
+  //   }
+  //   if (pokemon.id < tree.value.id) {
+  //     tree.prev = new PokemonTree(pokemon);
+  //     tree = tree.prev;
+  //     tree.next = tmp;
+  //   } else {
+  //     tree.next = new PokemonTree(pokemon);
+  //     tree = tree.next;
+  //     tree.prev = tmp;
+  //   }
+  // }
 }
