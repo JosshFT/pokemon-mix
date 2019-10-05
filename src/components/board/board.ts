@@ -17,18 +17,18 @@ export class Board {
   }
 
   async setPokemons() {
-    this.pokemonService.getPokemon(1);
-    this.pokemonService.getPokemon(4);
-    this.pokemonService.getPokemon(7);
-    this.pokemonService.getPokemon(133);
+    await this.pokemonService.getPokemon(1);
+    await this.pokemonService.getPokemon(4);
+    await this.pokemonService.getPokemon(7);
+    await this.pokemonService.getPokemon(133);
   }
 
   async getTree(key: number, tree: PokemonTree) {
-    // this.pokemonService.getPokemonEvolutions(key, tree);
-    this.pickPokemon(tree.value);
+    this.pokemonService.getPokemonEvolutions(key, tree);
+    this.pickPokemon(tree);
   }
 
-  pickPokemon(pokemon) {
-    this.pokemonService.addPokemonBench(pokemon);
+  pickPokemon(tree: PokemonTree) {
+    this.pokemonService.addPokemonBench(tree);
   }
 }

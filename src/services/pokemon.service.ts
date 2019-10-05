@@ -14,7 +14,7 @@ export default class PokemonService {
   baseUrl: string;
   http: HttpClient;
   pokemons: Map<number, BehaviorSubject<PokemonTree>>;
-  bench: BehaviorSubject<Bench>;
+  bench: BehaviorSubject<Pokemon[]>;
   store: Store;
   subscription;
   actions: PokemonActions;
@@ -36,7 +36,7 @@ export default class PokemonService {
     });
 
     this.pokemons = new Map<number, BehaviorSubject<PokemonTree>>();
-    this.bench = new BehaviorSubject(new Bench(new Map<0, {count: 0}>(), []));
+    this.bench = new BehaviorSubject([]);
     this.subscription = this.toObservable(this.store);
     this.subscription.subscribe(this.updatePokemonTree);
   }
@@ -63,7 +63,7 @@ export default class PokemonService {
 
   async getPokemonEvolutions(key: number, tree: PokemonTree) {
     this.pokemons.get(key).next(await this.actions.getPokemonEvolutions(tree));
-    // return 
+    return this.pokemons.get(key).value;
   }
 
   pokemonFactory(response: any) {
@@ -74,8 +74,9 @@ export default class PokemonService {
     return new PokemonTree(pokemon);
   }
 
-  addPokemonBench(pokemon: Pokemon) {
-    this.actions.addPokemonBench(pokemon, this.bench.value);
+  async addPokemonBench(tree: PokemonTree) {
+    let tmpTree = await this.getPokemonEvolutions(tree.value.id, tree);
+    this.actions.addPokemonBench(tmpTree, this.bench.value);
   }
 
   toObservable(store) {

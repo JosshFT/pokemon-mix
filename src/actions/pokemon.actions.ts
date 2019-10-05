@@ -1,10 +1,10 @@
-import Bench from 'models/bench.model';
+import Bench from '../Models/bench.model';
 import ApplicationStore from '../store/app.store';
-import Pokemon from "../models/pokemon.model";
+import Pokemon from "../Models/pokemon.model";
 import { inject } from "aurelia-framework";
 import { HttpClient } from 'aurelia-fetch-client';
 import { Dispatch } from 'redux';
-import PokemonTree from '../models/pokemon.tree';
+import PokemonTree from '../Models/pokemon.tree';
 
 export const FETCH_POKEMON_REQUEST = 'FETCH_POKEMON_REQUEST';
 export const FETCH_POKEMON_SUCESS = 'FETCH_POKEMON_SUCESS';
@@ -54,7 +54,7 @@ export default class PokemonActions {
     return { type: ADD_POKEMON_BENCH_REQUEST, payload: { loading: true } }
   }
   
-  addPokemonBenchSucess(bench: Bench) {
+  addPokemonBenchSucess(bench: Pokemon[]) {
     return { type: ADD_POKEMON_BENCH_SUCCESS, payload: { bench, loading: false } }
   }
 
@@ -62,16 +62,16 @@ export default class PokemonActions {
     return { type: ADD_POKEMON_BENCH_FAILURE, payload: { loading: false, error } }
   }
 
-  addPokemonBench(pokemon: Pokemon, bench: Bench) {
+  addPokemonBench(tree: PokemonTree, bench: Pokemon[]) {
     console.log("TCL: PokemonActions -> addPokemonBench -> bench", bench);
     this.dispatch(this.addPokemonBenchRequest());
-
-    let newCount = 1;
-    if(bench.count.has(pokemon.id)) {
-      newCount = bench.count.get(pokemon.id).count + 1;
+    
+    if (bench.filter((e)=> e.id === tree.value.id).length === 2) {
+      
+    } else {
+      bench.push(tree.value);
     }
-    bench.count.set(pokemon.id, { count: newCount});
-    bench.array.push(pokemon);
+
     this.dispatch(this.addPokemonBenchSucess(bench));
   }
 
