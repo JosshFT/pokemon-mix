@@ -1,6 +1,6 @@
+import { store } from './../../store/app.storee';
 import { inject } from 'aurelia-dependency-injection';
 import Pokemon from 'models/pokemon.model';
-import ApplicationStore from 'store/app.store';
 import PokemonService from 'services/pokemon.service';
 
 import './bench.scss';

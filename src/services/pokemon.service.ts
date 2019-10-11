@@ -1,49 +1,32 @@
+import { ApplicationState } from './../app.d';
+import { store } from './../store/app.storee';
 import { HttpClient } from 'aurelia-fetch-client';
 import { inject } from 'aurelia-framework';
 import { Store } from 'redux';
 import { BehaviorSubject } from 'rxjs';
 
 import Pokemon from '../models/pokemon.model';
-import PokemonTree from 'models/pokemon.tree';
-import PokemonActions from '../actions/pokemon.actions';
-import ApplicationStore from '../store/app.store';
-import Bench from 'models/bench.model';
+import PokemonTree from '../models/pokemon.tree';
+import * as PokemonActions from '../actions/pokemon.actions.copy';
 
-@inject(ApplicationStore, PokemonActions)
 export default class PokemonService {
-  baseUrl: string;
-  http: HttpClient;
   pokemons: Map<number, BehaviorSubject<PokemonTree>>;
   bench: BehaviorSubject<Pokemon[]>;
   store: Store;
   subscription;
-  actions: PokemonActions;
 
 
-  constructor(store: ApplicationStore, pokemonActions: PokemonActions) {
-    this.actions = pokemonActions;
-    this.store = store.store;
-    this.baseUrl = `https://pokeapi.co/api/v2`;
-    this.http = new HttpClient().configure(config => {
-      config
-        .withBaseUrl(this.baseUrl)
-        .withDefaults({
-          headers: {
-            'Accept': `application/json`,
-            'Access-Control-Allow-Origin': `*`
-          }
-        })
-    });
-
+  constructor() {
+    this.store = store;
     this.pokemons = new Map<number, BehaviorSubject<PokemonTree>>();
     this.bench = new BehaviorSubject([]);
     this.subscription = this.toObservable(this.store);
     this.subscription.subscribe(this.updatePokemonTree);
   }
 
-  updatePokemonTree = (state) => {
-    if (state.pokemon) {
-      let tree = this.pokemonTreeFactory(state.pokemon);
+  updatePokemonTree = (state: ApplicationState) => {
+    if (state.pokemonReducer.pokemon) {
+      let tree = this.pokemonTreeFactory(state.pokemonReducer.pokemon);
       if(!this.pokemons.has(tree.value.id)) {
         this.pokemons.set(tree.value.id, new BehaviorSubject<PokemonTree>(tree));
       } else {
@@ -51,18 +34,20 @@ export default class PokemonService {
       }
     }
 
-    if (state.bench) {
-      this.bench.next(state.bench);
+    if (state.pokemonReducer.bench) {
+      console.log("TCL: PokemonService -> updatePokemonTree -> state.pokemonReducer.bench", state.pokemonReducer.bench);
+      this.bench.next(state.pokemonReducer.bench);
     }
   }
 
   async getPokemon(id: number) {
+    console.log("TCL: PokemonService -> getPokemon -> id", id);
     // Dispatch some actions
-    this.actions.fetchPokemon(id, true);
+    new PokemonActions.fetchPokemon(id, true).getPokemon();
   }
 
   async getPokemonEvolutions(key: number, tree: PokemonTree) {
-    this.pokemons.get(key).next(await this.actions.getPokemonEvolutions(tree));
+    this.pokemons.get(key).next(await new PokemonActions.getPokemonEvolutions(tree).getEvolutions());
     return this.pokemons.get(key).value;
   }
 
@@ -76,7 +61,7 @@ export default class PokemonService {
 
   async addPokemonBench(tree: PokemonTree) {
     let tmpTree = await this.getPokemonEvolutions(tree.value.id, tree);
-    this.actions.addPokemonBench(tmpTree, this.bench.value);
+    new PokemonActions.addPokemonBench(tmpTree, this.bench.value).addPokemon();
   }
 
   toObservable(store) {

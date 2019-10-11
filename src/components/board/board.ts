@@ -2,10 +2,9 @@ import { Store } from 'redux';
 import { inject, View, LogManager } from 'aurelia-framework';
 import Pokemon from '../../models/pokemon.model';
 import PokemonService from '../../services/pokemon.service';
-import PokemonTree from 'models/pokemon.tree';
-import './board.scss'
-import ApplicationStore from '../../store/app.store';
+import PokemonTree from '../../models/pokemon.tree';
 import { BehaviorSubject } from 'rxjs';
+import './board.scss'
 
 @inject(PokemonService)
 export class Board {

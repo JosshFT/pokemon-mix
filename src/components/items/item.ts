@@ -1,5 +1,4 @@
 import { bindable } from 'aurelia-framework';
-import PokemonTree from 'models/pokemon.tree';
 import Pokemon from 'models/pokemon.model';
 import './item.scss';
 
