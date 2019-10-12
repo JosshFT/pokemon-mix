@@ -114,7 +114,7 @@ export class fetchPokemon {
 
   async getPokemon() {
     this.basePokemon && this.dispatch({ ...new fetchPokemonRequest()});
-    return await this.http.get(`/pokemon/${this.id}`)
+    await this.http.get(`/pokemon/${this.id}`)
       .then((response) => response.json())
       .then((response) => {
         let pokemon = this.pokemonFactory(response, this.color);

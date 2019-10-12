@@ -1,9 +1,9 @@
 <template>
   <div class="board">
     <tree
-      repeat.for="[key, value] of pokemons"
-      click.delegate="getTree(key, value.value)"
-      tree.bind="value"
+      repeat.for="[key, tree] of pokemons"
+      click.delegate="getTree(key, tree.value)"
+      tree.bind="tree"
     ></tree>
   </div>
   <bench></bench>

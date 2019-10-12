@@ -23,7 +23,9 @@ export class Board {
   }
 
   async getTree(key: number, tree: PokemonTree) {
-    this.pokemonService.getPokemonEvolutions(key, tree);
+    if (tree.length() === 0) {
+      this.pokemonService.getPokemonEvolutions(key, tree);
+    }
     this.pickPokemon(tree);
   }
 

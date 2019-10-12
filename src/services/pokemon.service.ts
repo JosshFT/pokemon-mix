@@ -60,8 +60,8 @@ export default class PokemonService {
   }
 
   async addPokemonBench(tree: PokemonTree) {
-    let tmpTree = await this.getPokemonEvolutions(tree.value.id, tree);
-    new PokemonActions.addPokemonBench(tmpTree, this.bench.value).addPokemon();
+    // let tmpTree = await this.getPokemonEvolutions(tree.value.id, tree);
+    new PokemonActions.addPokemonBench(tree, this.bench.value).addPokemon();
   }
 
   toObservable(store) {
